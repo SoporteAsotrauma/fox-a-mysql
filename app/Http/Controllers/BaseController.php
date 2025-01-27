@@ -14,11 +14,41 @@ class BaseController extends Controller
         $this->service = $service;
     }
 
-    public function search(Request $request): \Illuminate\Http\JsonResponse
+    public function search(Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
     {
         $filters = $request->all(); // Captura los filtros de la solicitud
-        return response()->json($this->service->search($filters));
+        $results = $this->service->search($filters);
+
+        // Convertir los resultados de objetos Eloquent a arrays
+        $arrayResults = $results->toArray();
+
+        // Convertir el array a XML
+        $xmlData = $this->arrayToXml($arrayResults);
+
+        // Devolver como respuesta XML
+        return response($xmlData, 200)->header('Content-Type', 'application/xml');
     }
+
+    private function arrayToXml($data, &$xmlData = null)
+    {
+        if ($xmlData === null) {
+            $xmlData = new \SimpleXMLElement('<root/>');
+        }
+
+        foreach ($data as $value) {
+            // Crear un contenedor <item> para cada fila de datos
+            $itemNode = $xmlData->addChild('item');
+
+            // Recorrer cada campo dentro de la fila de datos
+            foreach ($value as $key => $val) {
+                // Convertir cada clave en una etiqueta y su valor en contenido
+                $itemNode->addChild($key, htmlspecialchars($val));
+            }
+        }
+
+        return $xmlData->asXML();
+    }
+
     public function show($id)
     {
         $result = $this->service->find($id);
