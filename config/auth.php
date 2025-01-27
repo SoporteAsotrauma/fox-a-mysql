@@ -36,11 +36,17 @@ return [
     */
 
     'guards' => [
+        'api' => [
+            'driver' => 'jwt',  // Usamos el driver 'jwt' para la autenticación
+            'provider' => 'users',  // Proveedor de usuarios
+        ],
+
         'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
+            'driver' => 'session',  // Usamos el driver 'session' para la autenticación web
+            'provider' => 'users',  // Asegúrate de que el proveedor esté configurado correctamente
         ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -61,15 +67,11 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            'driver' => 'eloquent',  // Usamos Eloquent para el modelo User
             'model' => App\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------
