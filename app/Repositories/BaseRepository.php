@@ -18,8 +18,11 @@ class BaseRepository
 
         // Verificar si se proporcionan columnas específicas para seleccionar
         if (isset($filters['select'])) {
-            $query->select($filters['select']); // Seleccionar las columnas necesarias
+            // Convertir el arreglo de columnas a un string separado por comas sin comillas
+            $columns = implode(',', $filters['select']);
+            $query->selectRaw($columns); // Usa selectRaw para evitar las comillas
         }
+
 
         // Procesar joins (si aplica)
         if (isset($filters['join'])) {
@@ -83,15 +86,6 @@ class BaseRepository
         // Procesar group_by
         if (isset($filters['group_by'])) {
             $query->groupBy($filters['group_by']);
-        }
-
-        // Procesar limit y offset
-        if (isset($filters['limit'])) {
-            $query->limit($filters['limit']); // Aplica el límite de registros
-        }
-
-        if (isset($filters['offset'])) {
-            $query->offset($filters['offset']); // Aplica el desplazamiento
         }
 
         return $query->get(); // Devuelve los resultados filtrados
