@@ -17,16 +17,16 @@ class AuthController extends Controller
         // Intentar crear un token para el usuario
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response($this->toXml(['error' => 'Unauthorized']), 401)
+                return response($this->toXml(['response' => ['error' => 'Unauthorized']]), 401)
                     ->header('Content-Type', 'application/xml');
             }
         } catch (JWTException $e) {
-            return response($this->toXml(['error' => 'Could not create token']), 500)
+            return response($this->toXml(['response' => ['error' => 'Could not create token']]), 500)
                 ->header('Content-Type', 'application/xml');
         }
 
-        // Devolver el token como XML
-        $response = ['token' => $token];
+        // Devolver el token como XML con una etiqueta raíz "root"
+        $response = ['response' => ['token' => $token]];
         return response($this->toXml($response))
             ->header('Content-Type', 'application/xml');
     }
@@ -38,7 +38,7 @@ class AuthController extends Controller
      * @param string $rootElement
      * @return string
      */
-    private function toXml(array $data, string $rootElement = 'response'): string
+    private function toXml(array $data, string $rootElement = 'root'): string
     {
         $xml = new \SimpleXMLElement("<{$rootElement}/>");
 
