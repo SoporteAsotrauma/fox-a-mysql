@@ -60,7 +60,7 @@ class BaseRepository
         // Procesar condiciones AND (filtrado estándar)
         foreach ($filters as $key => $value) {
             // Excluir claves que son estructuras complejas
-            if (!in_array($key, ['select', 'join', 'or', 'order_by', 'group_by'])) {
+            if (!in_array($key, ['select', 'join', 'or', 'order_by', 'group_by', 'limit', 'offset'])) {
                 // Verificar si se debe usar un operador diferente
                 if (is_array($value) && isset($value['operator'])) {
                     if ($value['operator'] === 'IN' && is_array($value['value'])) {
@@ -83,6 +83,15 @@ class BaseRepository
         // Procesar group_by
         if (isset($filters['group_by'])) {
             $query->groupBy($filters['group_by']);
+        }
+
+        // Procesar limit y offset
+        if (isset($filters['limit'])) {
+            $query->limit($filters['limit']); // Aplica el límite de registros
+        }
+
+        if (isset($filters['offset'])) {
+            $query->offset($filters['offset']); // Aplica el desplazamiento
         }
 
         return $query->get(); // Devuelve los resultados filtrados
