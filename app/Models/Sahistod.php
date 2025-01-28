@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $sintomas
  * @property string $tratam
  * @property string $evoluc
- * @property string|null $trial667
+ * @property string|null $trial157
  *
  * @package App\Models
  */
@@ -44,6 +44,6 @@ class Sahistod extends Model
 		'sintomas',
 		'tratam',
 		'evoluc',
-		'trial667'
+		'trial157'
 	];
 }

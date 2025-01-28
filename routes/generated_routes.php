@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('auth/token', [AuthController::class, 'login']);
-
 Route::middleware(['jwt.auth'])->group(function () {
+    Route::get('sahistocs/{id}', ['App\Http\Controllers\SahistocController', 'show']);
+    Route::post('sahistocs', ['App\Http\Controllers\SahistocController', 'create']);
+    Route::post('sahistocs/search', ['App\Http\Controllers\SahistocController', 'search']);
+
     Route::get('sahistods/{id}', ['App\Http\Controllers\SahistodController', 'show']);
     Route::post('sahistods', ['App\Http\Controllers\SahistodController', 'create']);
     Route::post('sahistods/search', ['App\Http\Controllers\SahistodController', 'search']);

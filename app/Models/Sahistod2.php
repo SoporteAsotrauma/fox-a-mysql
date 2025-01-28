@@ -12,23 +12,23 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Sahistod2
  * 
- * @property float $num_histo
- * @property string $cod_anexo
- * @property string $memo
- * @property Carbon $fecha
- * @property string $hora
- * @property string $medico
- * @property string $serie
- * @property string $td
- * @property float $docn
- * @property string|null $trial008
+ * @property int $id
+ * @property float|null $num_histo
+ * @property string|null $cod_anexo
+ * @property string|null $memo
+ * @property Carbon|null $fecha
+ * @property string|null $hora
+ * @property string|null $medico
+ * @property string|null $serie
+ * @property string|null $td
+ * @property float|null $docn
+ * @property string|null $trial922
  *
  * @package App\Models
  */
 class Sahistod2 extends Model
 {
 	protected $table = 'sahistod2';
-	public $incrementing = false;
 	public $timestamps = false;
 
 	protected $casts = [
@@ -47,6 +47,6 @@ class Sahistod2 extends Model
 		'serie',
 		'td',
 		'docn',
-		'trial008'
+		'trial922'
 	];
 }
