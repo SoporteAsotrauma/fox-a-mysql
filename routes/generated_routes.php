@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::post('auth/token', [\App\Http\Controllers\AuthController::class, 'login']);
+
 Route::middleware(['jwt.auth'])->group(function () {
     Route::get('sahistocs/{id}', ['App\Http\Controllers\SahistocController', 'show']);
     Route::post('sahistocs', ['App\Http\Controllers\SahistocController', 'create']);
