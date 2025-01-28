@@ -17,25 +17,51 @@ class AuthController extends Controller
         // Intentar crear un token para el usuario
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'Unauthorized'], 401);
+                return response($this->toXml(['error' => 'Unauthorized']), 401)
+                    ->header('Content-Type', 'application/xml');
             }
         } catch (JWTException $e) {
-            return response()->json(['error' => 'Could not create token'], 500);
+            return response($this->toXml(['error' => 'Could not create token']), 500)
+                ->header('Content-Type', 'application/xml');
         }
 
-        return response()->json(compact('token'));
+        // Devolver el token como XML
+        $response = ['token' => $token];
+        return response($this->toXml($response))
+            ->header('Content-Type', 'application/xml');
     }
 
-    public function me(Request $request)
+    /**
+     * Helper para convertir un arreglo a XML.
+     *
+     * @param array $data
+     * @param string $rootElement
+     * @return string
+     */
+    private function toXml(array $data, string $rootElement = 'response'): string
     {
-        // Obtener el usuario autenticado
-        return response()->json($request->user());
+        $xml = new \SimpleXMLElement("<{$rootElement}/>");
+
+        $this->arrayToXml($data, $xml);
+
+        return $xml->asXML();
     }
 
-    public function logout(Request $request)
+    /**
+     * Convertir un arreglo a XML recursivamente.
+     *
+     * @param array $data
+     * @param \SimpleXMLElement $xml
+     */
+    private function arrayToXml(array $data, \SimpleXMLElement &$xml): void
     {
-        // Invalidar el token
-        JWTAuth::invalidate($request->token);
-        return response()->json(['message' => 'Logged out successfully']);
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $subnode = $xml->addChild(is_numeric($key) ? 'item' : $key);
+                $this->arrayToXml($value, $subnode);
+            } else {
+                $xml->addChild(is_numeric($key) ? 'item' : $key, htmlspecialchars($value));
+            }
+        }
     }
 }
