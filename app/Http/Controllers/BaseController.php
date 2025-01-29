@@ -29,7 +29,7 @@ class BaseController extends Controller
         return response($xmlData, 200)->header('Content-Type', 'application/xml');
     }
 
-    private function arrayToXml($data, &$xmlData = null)
+    private function arrayToXml($data, &$xmlData = null): bool|string
     {
         if ($xmlData === null) {
             $xmlData = new \SimpleXMLElement('<root/>');
@@ -49,7 +49,7 @@ class BaseController extends Controller
         return $xmlData->asXML();
     }
 
-    public function show($id)
+    public function show($id): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $result = $this->service->find($id);
 
@@ -69,13 +69,18 @@ class BaseController extends Controller
         return response($xmlContent, 200)
             ->header('Content-Type', 'application/xml');
     }
-    public function create(Request $request): \Illuminate\Http\JsonResponse
+    public function create(Request $request)
     {
-        // Crear el registro a través del servicio sin validación en el backend
+        // Crear el registro a través del servicio
         $createdRecord = $this->service->create($request->all());
 
-        return response()->json($createdRecord, 201);
+        // Convertir el modelo a array antes de pasarlo a XML
+        $xmlResponse = $this->arrayToXml([$createdRecord->toArray()]);
+
+        return response($xmlResponse, 201)->header('Content-Type', 'application/xml');
     }
+
+
 
 
 }
