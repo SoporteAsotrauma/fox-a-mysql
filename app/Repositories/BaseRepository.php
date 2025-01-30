@@ -87,8 +87,17 @@ class BaseRepository
         if (isset($filters['group_by'])) {
             $query->groupBy($filters['group_by']);
         }
+        $c = fn($s) => is_string($s) ? preg_replace('/[^\x20-\x7E\x0A\x0D\x09]/', '', trim(mb_convert_encoding($s, "UTF-8", "CP1252"))) : $s;
 
-        return $query->get(); // Devuelve los resultados filtrados
+        $resultados = $query->get();
+
+// Aplicar el formato a cada campo en cada fila
+        $resultados = $resultados->map(function ($item) use ($c) {
+            return collect($item)->map(fn($value) => $c($value));
+        });
+
+        return $resultados;
+
     }
 
     public function find($id)
