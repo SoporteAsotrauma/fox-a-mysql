@@ -83,6 +83,14 @@ class BaseRepository
             }
         }
 
+        // Procesar limit y offset
+        if (isset($filters['limit'])) {
+            $query->limit($filters['limit']); // Aplica el límite de registros
+        }
+        if (isset($filters['offset'])) {
+            $query->offset($filters['offset']); // Aplica el desplazamiento
+        }
+
         // Procesar group_by
         if (isset($filters['group_by'])) {
             $query->groupBy($filters['group_by']);
